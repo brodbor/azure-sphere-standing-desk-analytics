@@ -1,0 +1,18 @@
+{
+    "name": "saMT3620",
+    "startFile": "Transformation.asaql",
+    "configurations": [
+        {
+            "filePath": "JobConfig.json",
+            "subType": "JobConfig"
+        },
+        {
+            "filePath": "Inputs/iot.json",
+            "subType": "Input"
+        },
+        {
+            "filePath": "Outputs/cosmos.json",
+            "subType": "Output"
+        }
+    ]
+}

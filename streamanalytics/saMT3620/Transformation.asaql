@@ -1,0 +1,61 @@
+WITH 
+AnomalyDetectionStep AS(
+	SELECT 
+		IoTHub.ConnectionDeviceId as deviceId,
+		CAST(distance as BIGINT) distance,
+		ROUND(CAST(distance as BIGINT), - 2) distanceRound,
+		timestamp as timestamp,
+		AnomalyDetection_SpikeAndDip((ROUND(CAST(distance as BIGINT), - 2)), 95, 10, 'spikesanddips') OVER(LIMIT DURATION(minute, 5)) AS SpikeAndDipScores 
+	FROM 
+		iot 
+), 
+AgregateDataByHighestCount as(
+	SELECT 
+		COUNT(*) as cnt,
+		distanceRound,
+		deviceId,
+		System.Timestamp() AS timestamp 
+	from 
+		AnomalyDetectionStep 
+	where 
+		CAST(GetRecordPropertyValue(SpikeAndDipScores, 'IsAnomaly') as BIGINT) = 0 
+	GROUP BY 
+		TumblingWindow(minute, 5),
+		distanceRound,
+		deviceId 
+), 
+SensorDataByHour as(
+	SELECT 
+		deviceId,
+		AVG(distance),
+		COUNT(*) AS Count,
+		System.Timestamp() AS timestamp 
+	FROM 
+		AnomalyDetectionStep 
+	where 
+		CAST(GetRecordPropertyValue(SpikeAndDipScores, 'IsAnomaly') as BIGINT) = 0 
+	GROUP BY 
+		deviceId,
+		TumblingWindow(minute, 60) 
+), 
+last_event as(
+SELECT 
+    TopOne() OVER(ORDER BY cnt DESC) AS row 
+FROM 
+    SensorData 
+GROUP BY 
+    TumblingWindow(minute, 5) 
+) 
+
+select 
+    * into ala 
+from 
+    SensorDataByHour 
+
+select 
+    row.distanceRound,
+    row.deviceId,
+    row.timestamp into cosmos 
+from 
+    last_event 
+

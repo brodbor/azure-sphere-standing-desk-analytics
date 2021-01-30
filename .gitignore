@@ -1,0 +1,4 @@
+hl_Azure_Sphere_ADC/app_manifest.json
+hl_Azure_Sphere_IoT/app_manifest.json
+streamanalytics/saMT3620/Inputs/iot.json
+streamanalytics/saMT3620/Outputs/cosmos.json

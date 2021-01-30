@@ -12,14 +12,16 @@ This code performs analysis of distance based on the proximity of the user and s
 
 ## Project Config
 Add configuration to azure-sphere-standing-desk-analytics\hl_Azure_Sphere_IoT\app_manifest.json
+ - [authenticate using device provisioning service](https://docs.microsoft.com/en-us/azure-sphere/app-development/setup-iot-hub#authenticate-using-the-device-provisioning-service)
+
 ```{
   "SchemaVersion": 1,
   "Name": "hl_Azure_Sphere_IoT",
   "ComponentId": "ed4e667a-ce81-448b-aa64-85d28083559e",
   "EntryPoint": "/bin/app",
-  "CmdArgs": [ "--HostName", "xxxxx.azure-devices.net", "--ScopeID", "xxxxx" ],
+  "CmdArgs": [ "--HostName", "<IOT HUB HOST>", "--ScopeID", "<scope id>" ],
   "Capabilities": {
-    "AllowedConnections": [ "global.azure-devices-provisioning.net", "xxxx.azure-devices.net"],
+    "AllowedConnections": [ "global.azure-devices-provisioning.net", "<IOT HUB HOST>"],
     "AllowedApplicationConnections": [ "e4c61359-a32e-4206-8127-2c5735b887e6" ],
     "DeviceAuthentication": "221d2bf5-23b6-43d6-9ce0-9fb314a9af0d"
   },
